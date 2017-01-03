@@ -12,18 +12,21 @@ apiRoutes.get('/', (req, res) => {
   res.send('api is running');
 });
 
-apiRoutes.get('/setup', function(req, res) {
+apiRoutes.post('/setup', function(req, res) {
   // create a sample user
-  var nick = new User({
-    name: 'nemo',
-    password: 'password',
-    admin: true
+  var user = new User({
+    username: req.body.username,
+    password: req.body.password,
+    admin: req.body.admin
   });
   // save the sample user
-  nick.save(function(err) {
-    if (err) throw err;
+  user.save(function(err) {
+    if (err) {
+      res.json ({error: err});
+    }else{
     console.log('User saved successfully');
     res.json({ success: true });
+  }
   });
 });
 
