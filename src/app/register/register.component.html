@@ -1,3 +1,10 @@
 <p>
   register works!
 </p>
+<div>
+<label>username:</label> <input #username />
+<label>password:</label> <input #password />
+  <button (click)="add(username.value, password.value); username.value=''; password.value=''">
+    Register
+  </button>
+</div>
