@@ -1,26 +1,112 @@
-const express = require('express');
-const router = express.Router();
+const express         = require('express');
+const apiRoutes       = express.Router();
+const User            = require('../modules/user'); // get our mongoose model
+const jwt             = require('jsonwebtoken')
+const config          = require('../config');
+const app             = express();
 
-// declare axios for making http requests
-const axios = require('axios');
-const API = 'https://jsonplaceholder.typicode.com';
 
+app.set('superSecret', config.secret);
 /* GET api listing. */
-router.get('/', (req, res) => {
-  res.send('api works');
+apiRoutes.get('/', (req, res) => {
+  res.send('api is running');
 });
 
-// Get all posts
-router.get('/posts', (req, res) => {
-  // Get posts from the mock api
-  // This should ideally be replaced with a service that connects to MongoDB
-  axios.get(`${API}/posts`)
-    .then(posts => {
-      res.status(200).json(posts.data);
-    })
-    .catch(error => {
-      res.status(500).send(error)
+apiRoutes.get('/setup', function(req, res) {
+  // create a sample user
+  var nick = new User({
+    name: 'nemo',
+    password: 'password',
+    admin: true
+  });
+  // save the sample user
+  nick.save(function(err) {
+    if (err) throw err;
+    console.log('User saved successfully');
+    res.json({ success: true });
+  });
+});
+
+// route to authenticate a user (POST http://localhost:8080/api/authenticate)
+apiRoutes.post('/auth', function(req, res) {
+
+  // find the user
+  User.findOne({
+    name: req.body.name
+  }, function(err, user) {
+
+    if (err) throw err;
+
+    if (!user) {
+      res.json({ success: false, message: 'Authentication failed. User not found.' });
+    } else if (user) {
+
+      // check if password matches
+      if (user.password != req.body.password) {
+        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+      } else {
+
+        // if user is found and password is right
+        // create a token
+        var token = jwt.sign(user, app.get('superSecret'), {
+          expiresIn: 18000 // expires in 60*5 minutes
+        });
+
+        // return the information including token as JSON
+        res.json({
+          success: true,
+          message: 'Enjoy your token!',
+          token: token
+        });
+      }
+    }
+  });
+});
+
+
+// route middleware to verify a token
+apiRoutes.use(function(req, res, next) {
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+  // decode token
+  if (token) {
+
+    // verifies secret and checks exp
+    jwt.verify(token, app.get('superSecret'), function(err, decoded) {
+      if (err) {
+        //console.log(err);
+        console.log(app.get('superSecret'));
+        return res.json({ success: false, message: 'Failed to authenticate token.' });
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;
+        next();
+      }
     });
+
+  } else {
+    // if there is no token
+    // return an error
+    return res.status(403).send({
+        success: false,
+        message: 'No token provided.'
+    });
+
+  }
 });
 
-module.exports = router;
+/*=========================
+NEED A TOKEN FOR ANYTHING AFTER THIS COMMENT
+==========================*/
+
+apiRoutes.get('/users', function(req, res) {
+  User.find({}, function(err, users) {
+    res.json(users);
+  });
+});
+
+
+
+
+module.exports = apiRoutes;
