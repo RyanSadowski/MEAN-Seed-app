@@ -7,12 +7,15 @@ const morgan          = require('morgan');
 const mongoose        = require('mongoose');
 const jwt             = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const config          = require('./server/config'); // get our config file
+const cors            = require('cors')
+
+
 
 // Get our API routes
 const api = require('./server/routes/api');
 
 const app = express();
-
+app.use(cors())
 // Get config file
 mongoose.connect(config.database);
 app.set('superSecret', config.secret);

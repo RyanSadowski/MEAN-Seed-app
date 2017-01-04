@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router }            from '@angular/router';
 import { User }                from '../_models/user';
 import { UserService } from '../_services/user.service';
+import { Headers, Response, Http } from '@angular/http';
 
 @Component({
   selector: 'app-register',
@@ -10,21 +11,23 @@ import { UserService } from '../_services/user.service';
 })
 export class RegisterComponent implements OnInit {
   user: User;
+  result: JSON;
   //userService: UserService;
 
   constructor(
     private userService: UserService,
     private router: Router) {
-      this.userService = userService;
+    this.userService = userService;
+
   }
 
-    add(username: string, password: string): void {
+  add(username: string, password: string): void {
     username = username.trim();
     if (!username) { return; }
     this.userService.create(username, password)
-      .then(user => {
-        console.log("user");
-      });
+      .map(response => response)
+      .subscribe(function(response) { console.log("Success Response" + response)});
+  //  console.log(this.result);
   }
 
   ngOnInit() {
