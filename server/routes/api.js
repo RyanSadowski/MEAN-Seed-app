@@ -25,12 +25,11 @@ apiRoutes.post('/setup', function(req, res) {
       res.json ({error: err});
     }else{
     console.log('User saved successfully');
-    res.json({ success: true });
+    res.json({ body: "success, user registered" });
   }
   });
 });
 
-// route to authenticate a user (POST http://localhost:8080/api/authenticate)
 apiRoutes.post('/auth', function(req, res) {
 
   // find the user

@@ -7,24 +7,38 @@ import { User } from '../_models/user';
 @Injectable()
 export class UserService {
 
-private headers = new Headers({'Content-Type': 'application/json'});
-private url = "http://localhost:3000/api/setup";  // URL to web api
+  private headers = new Headers({ 'Content-Type': 'application/json' });
+  private url = "http://localhost:3000/api/setup";  // URL to web api
 
-constructor(private http: Http) { }
+  constructor(private http: Http) { }
 
-create(username: string, password: string): Observable<any> {
-  console.log("make");
-  return this.http
-     .post(this.url, JSON.stringify({username: username, password: password}), {headers: this.headers})
-     .map((response: Response) => response.json());
-    // .subscribe(result => this.result = result.json());
-
-    //  .map(response => response.json())
-    //  .subscribe(result => this.result = result.json());
-}
-
-private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error); // for demo purposes only
-    return Promise.reject(error.message || error);
+  create(username: string, password: string): Observable<any> {
+    console.log("make");
+    return this.http
+      .post(this.url, JSON.stringify({ username: username, password: password }), { headers: this.headers })
+        .map(this.extractData)
+        .catch(this.handleError);
   }
+
+  private extractData(res: Response) {
+    let body = res.json();
+    //console.log(body || {});
+    return body || {};
+  }
+  private handleError(error: Response | any) {
+    // In a real world app, we might use a remote logging infrastructure
+    let errMsg: string;
+    if (error instanceof Response) {
+      const body = error.json() || '';
+      const err = body.error || JSON.stringify(body);
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    } else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+    console.error(errMsg);
+    return Observable.throw(errMsg);
+  }
+
+
+
 }
