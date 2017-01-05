@@ -25,13 +25,13 @@ apiRoutes.post('/setup', function(req, res) {
       res.json ({error: err});
     }else{
     console.log('User saved successfully');
-    res.json({ body: "success, user registered" });
+    res.json({success: true, body: "success, user registered" });
   }
   });
 });
 
 apiRoutes.post('/auth', function(req, res) {
-
+  console.log(req.body);
   // find the user
   User.findOne({
     name: req.body.name

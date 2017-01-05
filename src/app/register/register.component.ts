@@ -11,36 +11,30 @@ import { Headers, Response, Http } from '@angular/http';
 })
 export class RegisterComponent implements OnInit {
   errorMessage: string;
-  saveSuccess: boolean;
+  registerSuccess: boolean;
   user: User;
-  result: JSON;
+  res: JSON;
   mode = 'Observable';
-  alert: string;
 
   constructor(
     private userService: UserService,
-    private router: Router) {}
+    private router: Router) { }
 
   add(username: string, password: string) {
     username = username.trim();
     if (!username) { return; }
-    this.userService.create(username, password)
+    this.userService.register(username, password)
       .subscribe(
-        res => {
-          console.log(res);
-          this.result = res.success;
-          this.saveSuccess = true;
-          //this.alert = res.alert;
-        },
-        error => this.errorMessage = <any>error);
-
-
-  //  console.log(this.result);
+      res => {
+        console.log(res);
+        this.registerSuccess = res.success;
+        this.res = res;
+      },
+      error => this.errorMessage = <any>error);
   }
 
   ngOnInit() {
-    //console.log('init');
-    //this.userService.create('username', 'password')
+
   }
 
 }

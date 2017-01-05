@@ -8,21 +8,27 @@ import { User } from '../_models/user';
 export class UserService {
 
   private headers = new Headers({ 'Content-Type': 'application/json' });
-  private url = "http://localhost:3000/api/setup";  // URL to web api
+  private url = "http://localhost:3000/api/";  // URL to web api
 
   constructor(private http: Http) { }
 
-  create(username: string, password: string): Observable<any> {
+  register(username: string, password: string): Observable<any> {
     console.log("make");
     return this.http
-      .post(this.url, JSON.stringify({ username: username, password: password }), { headers: this.headers })
+      .post(this.url + "setup", JSON.stringify({ username: username, password: password }), { headers: this.headers })
+        .map(this.extractData)
+        .catch(this.handleError);
+  }
+  login(username: string, password: string): Observable<any> {
+    return this.http
+      .post(this.url + "auth", JSON.stringify({ username: username, password: password }), { headers: this.headers })
         .map(this.extractData)
         .catch(this.handleError);
   }
 
   private extractData(res: Response) {
     let body = res.json();
-    //console.log(body || {});
+    console.log(body || {});
     return body || {};
   }
   private handleError(error: Response | any) {
