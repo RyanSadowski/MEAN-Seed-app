@@ -12,9 +12,12 @@
       </a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-right navbar-nav">
+      <ul class="nav navbar-right navbar-nav" *ngIf="!userService.authenticated">
         <li><a routerLink="/login">Login</a></li>
         <li><a routerLink="/register">Register</a></li>
+      </ul>
+      <ul class="nav navbar-right navbar-nav" *ngIf="userService.authenticated">
+        <li><a (click)="logout();">logout</a></li>
       </ul>
     </div>
   </div>

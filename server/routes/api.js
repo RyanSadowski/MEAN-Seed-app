@@ -1,9 +1,10 @@
-const express         = require('express');
-const apiRoutes       = express.Router();
-const User            = require('../modules/user'); // get our mongoose model
-const jwt             = require('jsonwebtoken')
-const config          = require('../config');
-const app             = express();
+const express = require('express');
+const apiRoutes = express.Router();
+const User = require('../modules/user'); // get our mongoose model
+const jwt = require('jsonwebtoken')
+const config = require('../config');
+//const bcrypt         = require("bcrypt");
+const app = express();
 
 
 app.set('superSecret', config.secret);
@@ -16,17 +17,24 @@ apiRoutes.post('/setup', function(req, res) {
   // create a sample user
   var user = new User({
     username: req.body.username,
-    password: req.body.password,
+    //password: bcrypt.hashSync(req.body.password, 10),
+    passowrd: req.body.password,
     admin: req.body.admin
   });
   // save the sample user
-  user.save(function(err) {
+  user.save(function(err, result) {
     if (err) {
-      res.json ({error: err});
-    }else{
-    console.log('User saved successfully');
-    res.json({success: true, body: "success, user registered" });
-  }
+      return res.status(500).json({
+        title: "an error occured",
+        error: err
+      })
+    } else {
+      res.status(201).json({
+        success: true,
+        obj: result,
+        body: "success, user registered"
+      });
+    }
   });
 });
 
@@ -37,17 +45,32 @@ apiRoutes.post('/auth', function(req, res) {
     name: req.body.name
   }, function(err, user) {
 
-    if (err) throw err;
-
+    if (err) {
+        return res.status(500).json({
+          title: 'An error occured!',
+          error: err
+        });
+    }
+    //user not found in db
     if (!user) {
-      res.json({ success: false, message: 'Authentication failed. User not found.' });
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication failed'
+      });
     } else if (user) {
-
       // check if password matches
+      // if (!bcrypt.compareSync(req.body.password, user.password)) {
+      //   res.status(401).json({
+      //     success: false,
+      //     message: 'Authentication failed.'
+      //   });
+      // }
       if (user.password != req.body.password) {
-        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+        res.status(500).json({
+          success: false,
+          message: 'Authentication failed.'
+        });
       } else {
-
         // if user is found and password is right
         // create a token
         var token = jwt.sign(user, app.get('superSecret'), {
@@ -58,6 +81,8 @@ apiRoutes.post('/auth', function(req, res) {
         res.json({
           success: true,
           message: 'Enjoy your token!',
+          username: user.username,
+          userId: user._id,
           token: token
         });
       }
@@ -79,7 +104,10 @@ apiRoutes.use(function(req, res, next) {
       if (err) {
         //console.log(err);
         console.log(app.get('superSecret'));
-        return res.json({ success: false, message: 'Failed to authenticate token.' });
+        return res.json({
+          success: false,
+          message: 'Failed to authenticate token.'
+        });
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;
@@ -91,8 +119,8 @@ apiRoutes.use(function(req, res, next) {
     // if there is no token
     // return an error
     return res.status(403).send({
-        success: false,
-        message: 'No token provided.'
+      success: false,
+      message: 'No token provided.'
     });
 
   }

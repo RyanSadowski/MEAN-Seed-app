@@ -16,7 +16,3 @@
   </div>
    <button type="button" class="btn btn-primary" (click)="login(username.value, password.value); username.value=''; password.value=''">Register!</button>
 </form>
-
-<div class="row">
-<div class="col-md-6" *ngIf="registerSuccess"><p style="break-word"><small>Token: {{res.token}}</small></p></div>
-</div>
