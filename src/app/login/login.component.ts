@@ -9,10 +9,10 @@ import { Headers, Response, Http } from '@angular/http';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent implements OnInit {
   errorMessage: string;
   registerSuccess: boolean;
-  user: User;
   res: JSON;
   mode = 'Observable';
 
