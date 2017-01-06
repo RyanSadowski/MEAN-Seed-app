@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const app = express();
 
 
-app.set('superSecret', config.secret);
+app.set('superSecret', process.env.Secret_key || config.secret);
 /* GET api listing. */
 apiRoutes.get('/', (req, res) => {
   res.send('api is running');
