@@ -17,7 +17,7 @@ const api = require('./server/routes/api');
 const app = express();
 app.use(cors())
 // Get config file
-mongoose.connect(config.database);
+mongoose.connect(process.env.MONGODB_URI || config.database);
 app.set('superSecret', config.secret);
 
 // Parsers for POST data
@@ -41,7 +41,7 @@ app.get('*', (req, res) => {
 /**
  * Get port from environment and store in Express.
  */
-const port = 3000;//process.env.PORT || '3000';
+const port = (process.env.PORT || '3000');
 app.set('port', port);
 
 /**
