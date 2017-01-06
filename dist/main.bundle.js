@@ -31,7 +31,7 @@ var UserService = (function () {
         this.router = router;
         this.user = new __WEBPACK_IMPORTED_MODULE_4__models_user__["a" /* User */];
         this.headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Headers */]({ 'Content-Type': 'application/json' });
-        this.url = "http://localhost:3000/api/"; // URL to web api
+        this.url = "/api/";
     }
     UserService.prototype.ngOnInit = function () {
         this.checkLogin();

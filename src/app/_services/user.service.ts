@@ -10,7 +10,7 @@ export class UserService implements OnInit {
   public user = new User;
   public authenticated: boolean;
   private headers = new Headers({ 'Content-Type': 'application/json' });
-  private url = "http://localhost:3000/api/";  // URL to web api
+  private url = "/api/";
 
   constructor(
     private http: Http,
