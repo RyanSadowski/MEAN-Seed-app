@@ -1,4 +1,3 @@
-
 const express = require('express');
 const apiRoutes = express.Router();
 const User = require('../modules/user'); // get our mongoose model
@@ -47,10 +46,10 @@ apiRoutes.post('/auth', function(req, res) {
   }, function(err, user) {
 
     if (err) {
-        return res.status(500).json({
-          title: 'An error occured!',
-          error: err
-        });
+      return res.status(500).json({
+        title: 'An error occured!',
+        error: err
+      });
     }
     //user not found in db
     if (!user) {
@@ -79,7 +78,7 @@ apiRoutes.post('/auth', function(req, res) {
         });
 
         // return the information including token as JSON
-        res.json({
+        res.status(201).json({
           success: true,
           message: 'Enjoy your token!',
           username: user.username,
@@ -130,6 +129,34 @@ apiRoutes.use(function(req, res, next) {
 /*=========================
 NEED A TOKEN FOR ANYTHING AFTER THIS COMMENT
 ==========================*/
+
+apiRoutes.post('/user', function(req, res) {
+  console.log(req.body);
+  // find the user
+  User.findOne({
+    username: req.body.username
+  }, function(err, user) {
+
+    if (err) {
+      return res.status(500).json({
+        title: 'An error occured!',
+        error: err
+      });
+    }
+    //user not found in db
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Why are you not a user?'
+      });
+    } else if (user) {
+      res.status(201).json({
+        success: true,
+        user: user
+      });
+    }
+  });
+});
 
 apiRoutes.get('/users', function(req, res) {
   User.find({}, function(err, users) {

@@ -18,7 +18,7 @@ const app = express();
 app.use(cors())
 // Get config file
 mongoose.connect(process.env.MONGODB_URI || config.database);
-app.set('superSecret', config.secret);
+app.set('superSecret', process.env.Secret_key || config.secret);
 
 // Parsers for POST data
 app.use(bodyParser.json());

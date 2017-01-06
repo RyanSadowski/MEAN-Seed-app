@@ -1,0 +1,27 @@
+<form>
+  <div class="form-group">
+    <label>UserName</label>
+    <input value="{{userService.user.username}}" class="form-control" disabled>
+  </div>
+  <div class="form-group">
+    <label>PassHash</label>
+    <input value="{{userService.user.password}}" class="form-control" disabled>
+  </div>
+  <div class="form-group">
+    <label>Created</label>
+    <input value="{{userService.user.updated_at}}" class="form-control" disabled>
+  </div>
+  <div class="form-group">
+    <label>id</label>
+    <input value="{{userService.user._id}}" class="form-control" disabled>
+  </div>
+  <div class="form-group">
+    <label for="exampleTextarea">Token</label>
+    <textarea class="form-control" rows="6" disabled>{{token}}</textarea>
+  </div>
+  <div class="form-group">
+    <label>Admin</label>
+    <input type="checkbox" class="form-check-input" *ngIf="userService.user.admin" checked="checked" disabled>
+    <input type="checkbox" class="form-check-input" *ngIf="!userService.user.admin" disabled>
+  </div>
+</form>

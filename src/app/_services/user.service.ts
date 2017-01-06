@@ -34,7 +34,29 @@ export class UserService implements OnInit {
       .post(this.url + "auth", JSON.stringify({ username: username, password: password }), { headers: this.headers })
       .map(this.extractData)
       .catch(this.handleError);
-
+  }
+  checkUser(username: string): Observable<any> {
+    const token = localStorage.getItem('token')
+      ? '?token=' + localStorage.getItem('token') : '' ;
+    if (this.authenticated){
+      return this.http
+        .post(this.url + "user" + token, JSON.stringify({ username: username}), { headers: this.headers })
+        .map(this.extractData)
+        .catch(this.handleError);
+    }
+    else{
+      alert("Please login");
+      this.router.navigateByUrl("/login");
+      return;
+    }
+  }
+  getUsers(): Observable<any> {
+    const token = localStorage.getItem('token')
+      ? '?token=' + localStorage.getItem('token') : '' ;
+    return this.http
+      .get(this.url + "users" + token,{ headers: this.headers })
+      .map(this.extractData)
+      .catch(this.handleError);
   }
   logout() {
     localStorage.clear();
