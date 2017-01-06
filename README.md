@@ -1,4 +1,31 @@
-# CollectiveChange
+# Mean2Template
+
+## Using
+- Angular-cli
+- mongodb
+- Nodejs
+
+## Features
+- JWT based auth
+- Admin page
+- Encrypted passwords
+- Works on Heroku
+
+## Setup
+- Have angular-cli installed ( look below for how to use angular-cli)
+- Have NodeJS
+- MongoDB running on `mongodb://localhost:27017` you can change it in /server/config.js
+- npm install 
+- node server.js
+- ng serve
+- check `localhost:4200`
+
+## Build
+- ng b -prod
+- node server.js
+- check localhost:3000 
+
+-----------------
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.24.
 
