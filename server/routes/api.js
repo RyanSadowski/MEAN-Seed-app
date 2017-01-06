@@ -1,3 +1,4 @@
+
 const express = require('express');
 const apiRoutes = express.Router();
 const User = require('../modules/user'); // get our mongoose model
@@ -18,7 +19,7 @@ apiRoutes.post('/setup', function(req, res) {
   var user = new User({
     username: req.body.username,
     //password: bcrypt.hashSync(req.body.password, 10),
-    passowrd: req.body.password,
+    password: req.body.password,
     admin: req.body.admin
   });
   // save the sample user
@@ -42,7 +43,7 @@ apiRoutes.post('/auth', function(req, res) {
   console.log(req.body);
   // find the user
   User.findOne({
-    name: req.body.name
+    username: req.body.username
   }, function(err, user) {
 
     if (err) {
@@ -66,7 +67,7 @@ apiRoutes.post('/auth', function(req, res) {
       //   });
       // }
       if (user.password != req.body.password) {
-        res.status(500).json({
+        return res.status(500).json({
           success: false,
           message: 'Authentication failed.'
         });

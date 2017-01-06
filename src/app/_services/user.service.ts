@@ -4,13 +4,14 @@ import { Headers, Response, Http } from '@angular/http';
 import { Observable } from 'rxjs';
 import { User } from '../_models/user';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject'
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class UserService implements OnInit {
   public user = new User;
   public authenticated: boolean;
   private headers = new Headers({ 'Content-Type': 'application/json' });
-  private url = "/api/";
+  private url = environment.apiUrlBase;
 
   constructor(
     private http: Http,
