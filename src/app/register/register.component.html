@@ -15,5 +15,17 @@
     <label for="exampleInputPassword1">Password</label>
     <input type="password" class="form-control" id="password_register" #password placeholder="Password">
   </div>
-   <button type="button" class="btn btn-primary" (click)="add(username.value, password.value); username.value=''; password.value=''">Register!</button>
+  <div class="form-group">
+    <label for="firstName">First Name</label>
+    <input type="text" class="form-control" id="firstName_register" aria-describedby="firstName" #firstName placeholder="Enter firstName">
+  </div>
+  <div class="form-group">
+    <label for="lastName">Last Name</label>
+    <input type="text" class="form-control" id="lastName_register" aria-describedby="lastName" #lastName placeholder="Enter lastName">
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" id="email_register" aria-describedby="email" #email placeholder="Enter Email">
+  </div>
+   <button type="button" class="btn btn-primary" (click)="add(username.value, password.value, firstName.value, lastName.value, email.value); username.value=''; password.value=''; firstName.value=''; lastName.value=''; email.value='';">Register!</button>
 </form>

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router }            from '@angular/router';
-import { User }                from '../_models/user';
-import { UserService } from '../_services/user.service';
-import { Headers, Response, Http } from '@angular/http';
+import { Component, OnInit }        from '@angular/core';
+import { Router }                   from '@angular/router';
+import { User }                     from '../_models/user';
+import { UserService }              from '../_services/user.service';
+import { Headers, Response, Http }  from '@angular/http';
 
 @Component({
   selector: 'app-register',
@@ -20,10 +20,10 @@ export class RegisterComponent implements OnInit {
     private userService: UserService,
     private router: Router) { }
 
-  add(username: string, password: string) {
+  add(username: string, password: string, firstName: string, lastName: string, email: string) {
     username = username.trim();
     if (!username) { return; }
-    this.userService.register(username, password)
+    this.userService.register(username, password, firstName, lastName, email)
       .subscribe(
       res => {
         console.log(res);

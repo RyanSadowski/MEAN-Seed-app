@@ -7,5 +7,9 @@ module.exports = mongoose.model('User', new User({
     updated_at: { type: Date, default: Date.now },
     username: {type: String, index: {unique: true}, required: [true, 'username required!']},
     password: {type: String, required: [true, 'password required!']},
-    admin: {type: Boolean, default: false }
+    admin: {type: Boolean, default: false },
+    firstName: {type: String, required: false},
+    lastName: {type: String, required: false},
+    email: {type: String, required: false},
+    active: {type: Boolean, default: true }
 }));

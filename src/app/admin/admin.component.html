@@ -1,0 +1,28 @@
+<div class="page-header">
+  <h1>Admin</h1>
+</div>
+
+<div class="panel panel-info">
+  <div class="panel-heading">Users</div>
+
+  <!-- Table -->
+  <table class="table table-striped">
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>First</th>
+      <th>Last</th>
+      <th>Active?</th>
+      <th>Admin?</th>
+    </tr>
+    <tr *ngFor="let user of users">
+      <td>{{user.username}}</td>
+      <td>{{user.email}}</td>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.active}}</td>
+      <td>{{user.admin}}</td>
+    </tr>
+
+  </table>
+</div>

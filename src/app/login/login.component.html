@@ -1,5 +1,5 @@
 <div class="alert alert-success" *ngIf="registerSuccess">
-    <strong>Success!</strong>
+  <strong>Success!</strong>
 </div>
 <div class="page-header">
   <h1>Login</h1>
@@ -14,5 +14,5 @@
     <label for="exampleInputPassword1">Password</label>
     <input type="password" class="form-control" id="password_register" #password placeholder="Password">
   </div>
-   <button type="button" class="btn btn-primary" (click)="login(username.value, password.value); username.value=''; password.value=''">Register!</button>
+  <button type="button" class="btn btn-primary" (click)="login(username.value, password.value); username.value=''; password.value=''">Login!</button>
 </form>

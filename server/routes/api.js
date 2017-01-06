@@ -3,7 +3,7 @@ const apiRoutes = express.Router();
 const User = require('../modules/user'); // get our mongoose model
 const jwt = require('jsonwebtoken')
 const config = require('../config');
-//const bcrypt         = require("bcrypt");
+const bcrypt = require("bcrypt");
 const app = express();
 
 
@@ -17,9 +17,10 @@ apiRoutes.post('/setup', function(req, res) {
   // create a sample user
   var user = new User({
     username: req.body.username,
-    //password: bcrypt.hashSync(req.body.password, 10),
-    password: req.body.password,
-    admin: req.body.admin
+    password: bcrypt.hashSync(req.body.password, 10),
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email
   });
   // save the sample user
   user.save(function(err, result) {
@@ -39,7 +40,6 @@ apiRoutes.post('/setup', function(req, res) {
 });
 
 apiRoutes.post('/auth', function(req, res) {
-  console.log(req.body);
   // find the user
   User.findOne({
     username: req.body.username
@@ -59,18 +59,13 @@ apiRoutes.post('/auth', function(req, res) {
       });
     } else if (user) {
       // check if password matches
-      // if (!bcrypt.compareSync(req.body.password, user.password)) {
-      //   res.status(401).json({
-      //     success: false,
-      //     message: 'Authentication failed.'
-      //   });
-      // }
-      if (user.password != req.body.password) {
-        return res.status(500).json({
+      if (!bcrypt.compareSync(req.body.password, user.password)) {
+        res.status(401).json({
           success: false,
           message: 'Authentication failed.'
         });
-      } else {
+      }
+      else {
         // if user is found and password is right
         // create a token
         var token = jwt.sign(user, app.get('superSecret'), {
@@ -83,6 +78,7 @@ apiRoutes.post('/auth', function(req, res) {
           message: 'Enjoy your token!',
           username: user.username,
           userId: user._id,
+          admin: user.admin,
           token: token
         });
       }
@@ -90,21 +86,16 @@ apiRoutes.post('/auth', function(req, res) {
   });
 });
 
-
 // route middleware to verify a token
 apiRoutes.use(function(req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
   // decode token
   if (token) {
-
     // verifies secret and checks exp
     jwt.verify(token, app.get('superSecret'), function(err, decoded) {
       if (err) {
-        //console.log(err);
-        console.log(app.get('superSecret'));
-        return res.json({
+        return res.status(500).json({
           success: false,
           message: 'Failed to authenticate token.'
         });
@@ -120,9 +111,8 @@ apiRoutes.use(function(req, res, next) {
     // return an error
     return res.status(403).send({
       success: false,
-      message: 'No token provided.'
+      message: 'Not authenticated'
     });
-
   }
 });
 
@@ -163,8 +153,5 @@ apiRoutes.get('/users', function(req, res) {
     res.json(users);
   });
 });
-
-
-
 
 module.exports = apiRoutes;

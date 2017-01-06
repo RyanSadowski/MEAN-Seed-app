@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { UserService } from '../_services/user.service';
-import { Router }            from '@angular/router';
-import { LoginComponent }   from '../login/login.component'
-import {BehaviorSubject} from 'rxjs/BehaviorSubject'
+import { Component, OnInit }      from '@angular/core';
+import { UserService }            from '../_services/user.service';
+import { Router }                 from '@angular/router';
+import { LoginComponent }         from '../login/login.component'
+import {BehaviorSubject}          from 'rxjs/BehaviorSubject'
 
 @Component({
   selector: 'navbar',
@@ -12,17 +12,15 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject'
 export class NavbarComponent implements OnInit {
   public isLoggedIn: boolean;
 
-  constructor(  private userService: UserService ) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
     this.userService.checkLogin();
   }
-  logout(){
+  logout() {
     this.userService.logout();
   }
-  loggedIn(success){
+  loggedIn(success) {
     console.log(success + " logged in ");
   }
-  //this.userService.authed.subscribe((value: boolean) => console.log(value));
-
 }

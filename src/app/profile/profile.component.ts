@@ -8,9 +8,11 @@ import { UserService }       from '../_services/user.service';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+
   errorMessage: string;
   username: string;
   token: string;
+
   constructor(
     private userService: UserService,
     private router: Router
@@ -20,16 +22,15 @@ export class ProfileComponent implements OnInit {
     this.token = localStorage.getItem('token')
     this.checkUser();
   }
-  checkUser(){
+  checkUser() {
     this.username = localStorage.getItem('username');
-    if(!this.username){
+    if (!this.username) {
       alert('need to login');
       this.router.navigateByUrl("/login");
     }
     this.userService.checkUser(this.username)
       .subscribe(
       res => {
-        //console.log(res);
         this.userService.user = res.user;
       },
       error => this.errorMessage = <any>error);
