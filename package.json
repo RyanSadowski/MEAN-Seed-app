@@ -38,6 +38,7 @@
     "karma-remap-istanbul": "^0.6.0",
     "mongoose": "*",
     "morgan": "*",
+    "octavian": "^2.2.0",
     "protractor": "^5.1.1",
     "rxjs": "*",
     "ts-helpers": "*",
