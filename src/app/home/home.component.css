@@ -1,0 +1,14 @@
+.key{
+  border : 1px solid black;
+  width: 40px;
+  height: 100px;
+  margin: 0;
+  padding:8px;
+  display: inline;
+}
+.key:hover{
+  border : 1px solid blue;
+}
+.key:active{
+background-color: #000;
+}

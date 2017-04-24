@@ -10,6 +10,7 @@ import { Octavian, Note }               from 'octavian';
 export class HomeComponent implements OnInit {
 
   volume= 0;
+  oscType = 'sine'
   gain: number;
   note = new Note('A4');
   audioCtx = new (<any>window).AudioContext();
@@ -23,7 +24,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
 
     this.ChangeVolume(0);   //start it silent
-    this.oscillator.type = 'sine';
+    this.oscillator.type = this.oscType;
     this.oscillator.frequency.value = this.note.frequency; // value in hertz
     this.oscillator.connect(this.gainNode);
     this.gainNode.connect(this.audioCtx.destination);
@@ -38,6 +39,11 @@ export class HomeComponent implements OnInit {
   ChangeNote(value:string):void{
     this.note = new Note(value);
     this.oscillator.frequency.value = this.note.frequency;
+  }
+  ChangeWaveForm(value:string):void{
+    this.oscType = value;
+    this.oscillator.type = this.oscType;
+
 
   }
 

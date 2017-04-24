@@ -83,6 +83,7 @@ var HomeComponent = (function () {
     function HomeComponent(userService) {
         this.userService = userService;
         this.volume = 0;
+        this.oscType = 'sine';
         this.note = new __WEBPACK_IMPORTED_MODULE_2_octavian__["Note"]('A4');
         this.audioCtx = new window.AudioContext();
         this.oscillator = this.audioCtx.createOscillator();
@@ -90,7 +91,7 @@ var HomeComponent = (function () {
     }
     HomeComponent.prototype.ngOnInit = function () {
         this.ChangeVolume(0); //start it silent
-        this.oscillator.type = 'sine';
+        this.oscillator.type = this.oscType;
         this.oscillator.frequency.value = this.note.frequency; // value in hertz
         this.oscillator.connect(this.gainNode);
         this.gainNode.connect(this.audioCtx.destination);
@@ -104,6 +105,10 @@ var HomeComponent = (function () {
     HomeComponent.prototype.ChangeNote = function (value) {
         this.note = new __WEBPACK_IMPORTED_MODULE_2_octavian__["Note"](value);
         this.oscillator.frequency.value = this.note.frequency;
+    };
+    HomeComponent.prototype.ChangeWaveForm = function (value) {
+        this.oscType = value;
+        this.oscillator.type = this.oscType;
     };
     return HomeComponent;
 }());
@@ -682,7 +687,7 @@ exports = module.exports = __webpack_require__(33)();
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, ".key{\n  border : 1px solid black;\n  width: 40px;\n  height: 100px;\n  margin: 0;\n  padding:8px;\n  display: inline;\n}\n.key:hover{\n  border : 1px solid blue;\n}\n.key:active{\nbackground-color: #000;\n}\n", ""]);
 
 // exports
 
@@ -781,7 +786,7 @@ module.exports = "<navbar></navbar>\n<div class=\"container body-container\">\n 
 /***/ 389:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"jumbotron\">\n  <h1 *ngIf=\"!userService.authenticated\">Welcome!</h1>\n  <h1 *ngIf=\"userService.authenticated\">Hello, {{userService.user.username}}!</h1>\n  <p>This is a basic template made by <a href=\"http://www.ryansadowski.xyz\">Ryan Sadowski</a></p>\n  <p><a class=\"btn btn-primary btn-lg\" href=\"http://github.com/RyanSadowski/MEAN2Seed\" role=\"button\">Learn more</a></p>\n</div>\n\n<h3> Slider changes volume, Input box changes tone. </h3>\n<input type=\"range\" min=\"0\" max=\"10\" value=\"0\" [(ngModel)]=\"volume\" (change)=\"ChangeVolume($event.target.value)\">\n<input type=\"text\" [(ngModel)]=\"tone\" placeholder=\"A4\" (change)=\"ChangeNote($event.target.value)\">\n<p class=\"muted\">Try values like \"A4,B5,G2\"</p>\n"
+module.exports = "<div class=\"jumbotron\">\n  <h1 *ngIf=\"!userService.authenticated\">Welcome!</h1>\n  <h1 *ngIf=\"userService.authenticated\">Hello, {{userService.user.username}}!</h1>\n  <p>This is a basic template made by <a href=\"http://www.ryansadowski.xyz\">Ryan Sadowski</a></p>\n  <p><a class=\"btn btn-primary btn-lg\" href=\"http://github.com/RyanSadowski/MEAN2Seed\" role=\"button\">Learn more</a></p>\n</div>\n\n<h3> Slider changes volume</h3>\n<input type=\"range\" min=\"0\" max=\"10\" value=\"0\" [(ngModel)]=\"volume\" (change)=\"ChangeVolume($event.target.value)\">\n<!-- <input type=\"text\" [(ngModel)]=\"tone\" placeholder=\"A4\" (change)=\"ChangeNote($event.target.value)\"> -->\n<ul id=\"waveFormList\">\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"sine\" id=\"sine\"><span>  sine</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"square\" id=\"square\"><span>  square</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"sawtooth\" id=\"sawtooth\"><span>  saw</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"triangle\" id=\"triangle\"><span>  triangle</span></li>\n</ul>\n\n<div id=\"keyboard\">\n  <div (click)=\"ChangeNote('C3')\" class=\"key\">C3</div>\n  <div (click)=\"ChangeNote('D3')\" class=\"key\">D3</div>\n  <div (click)=\"ChangeNote('E3')\" class=\"key\">E3</div>\n  <div (click)=\"ChangeNote('F3')\" class=\"key\">F3</div>\n  <div (click)=\"ChangeNote('G3')\" class=\"key\">G3</div>\n  <div (click)=\"ChangeNote('A3')\" class=\"key\">A3</div>\n  <div (click)=\"ChangeNote('B3')\" class=\"key\">B3</div>\n  <div (click)=\"ChangeNote('C4')\" class=\"key\">C4</div>\n  <div (click)=\"ChangeNote('D4')\" class=\"key\">D4</div>\n  <div (click)=\"ChangeNote('E4')\" class=\"key\">E4</div>\n  <div (click)=\"ChangeNote('F4')\" class=\"key\">F4</div>\n  <div (click)=\"ChangeNote('G4')\" class=\"key\">G4</div>\n  <div (click)=\"ChangeNote('A4')\" class=\"key\">A4</div>\n  <div (click)=\"ChangeNote('B4')\" class=\"key\">B4</div>\n  <div (click)=\"ChangeNote('C5')\" class=\"key\">C5</div>\n  <div (click)=\"ChangeNote('D5')\" class=\"key\">D5</div>\n  <div (click)=\"ChangeNote('E5')\" class=\"key\">E5</div>\n  <div (click)=\"ChangeNote('F5')\" class=\"key\">F5</div>\n  <div (click)=\"ChangeNote('G5')\" class=\"key\">G5</div>\n  <div (click)=\"ChangeNote('A5')\" class=\"key\">A5</div>\n  <div (click)=\"ChangeNote('B5')\" class=\"key\">B5</div>\n</div>\n\n<!-- <p class=\"muted\">Try values like \"A4,B5,G2\"</p>-->\n"
 
 /***/ }),
 
