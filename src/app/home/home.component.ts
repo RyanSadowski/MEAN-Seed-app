@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   audioCtx = new (<any>window).AudioContext();
   oscillator = this.audioCtx.createOscillator();
   gainNode = this.audioCtx.createGain();
+  distortion = this.audioCtx.createWaveShaper();
 
   constructor(
     private userService: UserService,
@@ -26,11 +27,13 @@ export class HomeComponent implements OnInit {
     this.ChangeVolume(0);   //start it silent
     this.oscillator.type = this.oscType;
     this.oscillator.frequency.value = this.note.frequency; // value in hertz
+    this.distortion.curve = this.MakeDistortion(3);
     this.oscillator.connect(this.gainNode);
-    this.gainNode.connect(this.audioCtx.destination);
+    this.gainNode.connect(this.distortion);
+    this.distortion.connect(this.audioCtx.destination);
     this.oscillator.start();
-
   }
+
   ChangeVolume(value:number):void {
     this.gain = (value/10);
     this.gainNode.gain.value = this.gain;
@@ -43,10 +46,19 @@ export class HomeComponent implements OnInit {
   ChangeWaveForm(value:string):void{
     this.oscType = value;
     this.oscillator.type = this.oscType;
-
-
   }
-
-
+  MakeDistortion( amount ) {
+    var k = typeof amount === 'number' ? amount : 50;
+    var  n_samples = 44100;
+    var curve = new Float32Array(n_samples);
+    var deg = Math.PI / 180;
+    var i = 0;
+    var x;
+    for ( ; i < n_samples; ++i ) {
+      x = i * 2 / n_samples - 1;
+      curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+    }
+    this.distortion.curve = curve;
+};
 
 }
