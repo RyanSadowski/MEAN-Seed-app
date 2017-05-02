@@ -39,4 +39,9 @@
   <div (click)="ChangeNote('B5')" class="key">B5</div>
 </div>
 
+
+<br>
+
+<h3>Low Pass filter 0hz - 1000hz</h3>
+<input type="range" min="0" max="1000" value="1000" (change)="ChangeFilter($event.target.value)">
 <!-- <p class="muted">Try values like "A4,B5,G2"</p>-->

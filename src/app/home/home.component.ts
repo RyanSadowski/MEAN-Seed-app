@@ -12,11 +12,14 @@ export class HomeComponent implements OnInit {
   volume= 0;
   oscType = 'sine'
   gain: number;
+  distortionAmount: number;
   note = new Note('A4');
   audioCtx = new (<any>window).AudioContext();
   oscillator = this.audioCtx.createOscillator();
   gainNode = this.audioCtx.createGain();
   distortion = this.audioCtx.createWaveShaper();
+  filter = this.audioCtx.createBiquadFilter();
+
 
   constructor(
     private userService: UserService,
@@ -27,13 +30,18 @@ export class HomeComponent implements OnInit {
     this.ChangeVolume(0);   //start it silent
     this.oscillator.type = this.oscType;
     this.oscillator.frequency.value = this.note.frequency; // value in hertz
-    this.distortion.curve = this.MakeDistortion(3);
+    this.distortion.curve = this.MakeDistortion(1);
+    this.filter.type = this.filter.LOWPASS;
+    this.filter.frequency.value = 1000;
     this.oscillator.connect(this.gainNode);
     this.gainNode.connect(this.distortion);
-    this.distortion.connect(this.audioCtx.destination);
+    this.distortion.connect(this.filter);
+    this.filter.connect(this.audioCtx.destination);
     this.oscillator.start();
   }
-
+  ChangeFilter(value:number):void {
+    this.filter.frequency.value = value;
+  }
   ChangeVolume(value:number):void {
     this.gain = (value/10);
     this.gainNode.gain.value = this.gain;
@@ -59,6 +67,7 @@ export class HomeComponent implements OnInit {
       curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
     }
     this.distortion.curve = curve;
+    //console.log( "distortion changed to:" + curve );
 };
 
 }
