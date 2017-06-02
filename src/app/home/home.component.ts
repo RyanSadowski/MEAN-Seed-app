@@ -8,7 +8,7 @@ import { Octavian, Note }               from 'octavian';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
+  midi;
   volume= 0;
   oscType = 'sine'
   gain: number;
@@ -26,6 +26,13 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if ((<any>window).navigator.requestMIDIAccess) {
+      (<any>window).navigator.requestMIDIAccess({
+        sysex: false
+      }).then(this.onMIDISuccess, this.onMIDIFailure);
+    } else {
+      alert("No MIDI support in your browser.");
+    }
 
     this.ChangeVolume(0);   //start it silent
     this.oscillator.type = this.oscType;
@@ -68,6 +75,23 @@ export class HomeComponent implements OnInit {
     }
     this.distortion.curve = curve;
     //console.log( "distortion changed to:" + curve );
-};
+  };
+
+  onMIDISuccess(midiAccess):void {
+    midi = midiAccess;
+    var inputs = midi.inputs.values();
+    // loop through all inputs
+    for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+        // listen for midi messages
+        input.value.onmidimessage = onMIDIMessage;
+        // this just lists our inputs in the console
+        listInputs(input);
+    }
+    // listen for connect/disconnect message
+    midi.onstatechange = onStateChange;
+}
+ onMIDIFailure(e):void {
+    log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + e);
+}
 
 }
