@@ -1,6 +1,6 @@
 import { Component, OnInit }      from '@angular/core';
 import { UserService }            from '../_services/user.service';
-import { Octavian, Note }               from 'octavian';
+import { Octavian, Note }         from 'octavian';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
 
 
   constructor(
-    private userService: UserService,
+    userService: UserService,
   ) { }
 
   ngOnInit() {

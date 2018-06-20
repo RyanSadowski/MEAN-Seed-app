@@ -57,7 +57,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _models_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../_models/user */ "./src/app/_models/user.ts");
-/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../environments/environment */ "./src/environments/environment.ts");
+/* harmony import */ var _environments_environment_prod__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../environments/environment.prod */ "./src/environments/environment.prod.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -78,7 +78,7 @@ var UserService = /** @class */ (function () {
         this.router = router;
         this.user = new _models_user__WEBPACK_IMPORTED_MODULE_3__["User"];
         this.headers = new Headers({ 'Content-Type': 'application/json' });
-        this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrlBase;
+        this.url = _environments_environment_prod__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrlBase;
     }
     UserService.prototype.ngOnInit = function () {
         this.checkLogin();
@@ -461,7 +461,6 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var HomeComponent = /** @class */ (function () {
     function HomeComponent(userService) {
-        this.userService = userService;
         this.volume = 0;
         this.oscType = 'sine';
         this.note = new octavian__WEBPACK_IMPORTED_MODULE_2__["Note"]('A4');
@@ -891,6 +890,25 @@ var RegisterComponent = /** @class */ (function () {
 
 // Observable class extensions
 // Observable operators
+
+
+/***/ }),
+
+/***/ "./src/environments/environment.prod.ts":
+/*!**********************************************!*\
+  !*** ./src/environments/environment.prod.ts ***!
+  \**********************************************/
+/*! exports provided: environment */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
+var environment = {
+    production: true,
+    envName: "Prod",
+    apiUrlBase: "/api/"
+};
 
 
 /***/ }),
