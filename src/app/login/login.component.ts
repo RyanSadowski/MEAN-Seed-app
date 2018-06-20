@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output }   from '@angular/core';
 import { Router }                                   from '@angular/router';
-import { Headers, Response, Http }                  from '@angular/http';
+import { Headers, Response }                        from '@angular/http'; //TODO: Find out if I can remove this. 
+import { HttpClient }                               from '@angular/common/http';
 import { User }                                     from '../_models/user';
 import { UserService }                              from '../_services/user.service';
 import { NavbarComponent }                          from '../navbar/navbar.component';

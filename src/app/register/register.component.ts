@@ -2,7 +2,8 @@ import { Component, OnInit }        from '@angular/core';
 import { Router }                   from '@angular/router';
 import { User }                     from '../_models/user';
 import { UserService }              from '../_services/user.service';
-import { Headers, Response, Http }  from '@angular/http';
+import { Headers, Response }        from '@angular/http';
+import { HttpClient }               from '@angular/common/http';//TODO: Find out IF/HOW to Remove this. 
 
 @Component({
   selector: 'app-register',

@@ -1,10 +1,10 @@
-import { Injectable, OnInit }               from '@angular/core';
-import { Router }                           from '@angular/router';
-import { Headers, Response, Http }          from '@angular/http';
-import { Observable }                       from 'rxjs';
-import { User }                             from '../_models/user';
-import {BehaviorSubject}                    from 'rxjs/BehaviorSubject'
-import {environment}                        from '../../environments/environment';
+
+import { Observable , BehaviorSubject}                                      from 'rxjs';
+import { Injectable, OnInit }                                               from '@angular/core';
+import { Router }                                                           from '@angular/router';
+import { HttpClient, HttpHeaders, HttpRequest }                             from '@angular/common/http';
+import { User }                                                             from '../_models/user';
+import {environment}                                                        from '../../environments/environment';
 
 @Injectable()
 export class UserService implements OnInit {
@@ -16,7 +16,7 @@ export class UserService implements OnInit {
   private url = environment.apiUrlBase;
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private router: Router
   ) { }
 
@@ -27,16 +27,18 @@ export class UserService implements OnInit {
   register(username: string, password: string, firstName: string, lastName: string, email: string): Observable<any> {
     console.log("make");
     return this.http
-      .post(this.url + "setup", JSON.stringify({ username: username, password: password, firstName: firstName, lastName: lastName, email: email }), { headers: this.headers })
-      .map(this.extractData)
-      .catch(this.handleError);
+      .post<any>(this.url + "setup", { username: username, password: password, firstName: firstName, lastName: lastName, email: email });//,{headers:this.headers});
+      // .post(this.url + "setup", JSON.stringify({ username: username, password: password, firstName: firstName, lastName: lastName, email: email }), { headers: this.headers })
+      // .map(this.extractData)
+      // .catch(this.handleError);    pre HttpClient way of doing this
   }
 
   login(username: string, password: string): Observable<any> {
     return this.http
-      .post(this.url + "auth", JSON.stringify({ username: username, password: password }), { headers: this.headers })
-      .map(this.extractData)
-      .catch(this.handleError);
+      .post<any>(this.url + "auth", { username: username, password: password});
+      // .post(this.url + "auth", JSON.stringify({ username: username, password: password }), { headers: this.headers })
+      // .map(this.extractData)
+      // .catch(this.handleError);  pre HttpClient way of doing this
   }
 
   checkUser(username: string): Observable<any> {
@@ -44,9 +46,10 @@ export class UserService implements OnInit {
       ? '?token=' + localStorage.getItem('token') : '';
     if (this.authenticated) {
       return this.http
-        .post(this.url + "user" + token, JSON.stringify({ username: username }), { headers: this.headers })
-        .map(this.extractData)
-        .catch(this.handleError);
+        .post<any>(this.url + "user" + token, {username: username});
+        // .post(this.url + "user" + token, JSON.stringify({ username: username }), { headers: this.headers })
+        // .map(this.extractData)
+        // .catch(this.handleError); pre HttpClient way of doing this
     }
     else {
       alert("Please login");
@@ -59,9 +62,10 @@ export class UserService implements OnInit {
     const token = localStorage.getItem('token')
       ? '?token=' + localStorage.getItem('token') : '';
     return this.http
-      .get(this.url + "users" + token, { headers: this.headers })
-      .map(this.extractData)
-      .catch(this.handleError);
+      .get<any>(this.url + "users" + token);
+      // .get(this.url + "users" + token, { headers: this.headers })
+      // .map(this.extractData)
+      // .catch(this.handleError);
   }
 
   logout() {
@@ -89,16 +93,16 @@ export class UserService implements OnInit {
     return body || {};
   }
 
-  private handleError(error: Response | any) {
-    let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    console.error(errMsg);
-    return Observable.throw(errMsg);
-  }
+  // private handleError(error: Response | any) {
+  //   let errMsg: string;
+  //   if (error instanceof Response) {
+  //     const body = error.json() || '';
+  //     const err = body.error || JSON.stringify(body);
+  //     errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+  //   } else {
+  //     errMsg = error.message ? error.message : error.toString();
+  //   }
+  //   console.error(errMsg);
+  //   return observableThrowError(errMsg);
+  // }
 }

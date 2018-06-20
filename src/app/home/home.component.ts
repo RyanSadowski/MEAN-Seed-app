@@ -78,20 +78,20 @@ export class HomeComponent implements OnInit {
   };
 
   onMIDISuccess(midiAccess):void {
-    midi = midiAccess;
+    var midi = midiAccess;
     var inputs = midi.inputs.values();
     // loop through all inputs
     for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
         // listen for midi messages
-        input.value.onmidimessage = onMIDIMessage;
+        input.value.onmidimessage = this.midi;
         // this just lists our inputs in the console
-        listInputs(input);
+        // listInputs(input);
     }
     // listen for connect/disconnect message
-    midi.onstatechange = onStateChange;
+    midi.onratechange = onratechange;
 }
  onMIDIFailure(e):void {
-    log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + e);
+    console.log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + e);
 }
 
 }
