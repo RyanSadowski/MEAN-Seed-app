@@ -1,6 +1,6 @@
 <div class="jumbotron">
-  <h1 *ngIf="!auth">Welcome!</h1>
-  <h1 *ngIf="auth">Hello, {{username}}!</h1>
+  <h1 *ngIf="!this.userService.user.auth">Welcome!</h1>
+  <h1 *ngIf="this.userService.user.auth">Hello, {{this.userService.user.username}}!</h1>
   <p>This is a basic template made by <a href="http://www.ryansadowski.xyz">Ryan Sadowski</a></p>
   <p><a class="btn btn-primary btn-lg" href="http://github.com/RyanSadowski/MEAN2Seed" role="button">Learn more</a></p>
 </div>
