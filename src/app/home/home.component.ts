@@ -1,12 +1,14 @@
 import { Component, OnInit }      from '@angular/core';
-import { UserService }            from '../_services/user.service';
 import { Octavian, Note }         from 'octavian';
+import { UserService }            from '../_services/user.service'
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
+
 export class HomeComponent implements OnInit {
   midi;
   volume= 0;
@@ -20,12 +22,12 @@ export class HomeComponent implements OnInit {
   distortion = this.audioCtx.createWaveShaper();
   filter = this.audioCtx.createBiquadFilter();
 
-
-  constructor(
-    userService: UserService,
-  ) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+    this.userService.checkLogin()
+    // var auth = this.userService.authenticated;
+    // var username = this.userService.user.username;
     if ((<any>window).navigator.requestMIDIAccess) {
       (<any>window).navigator.requestMIDIAccess({
         sysex: false

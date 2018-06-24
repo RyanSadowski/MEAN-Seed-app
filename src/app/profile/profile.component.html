@@ -1,44 +1,44 @@
 <form>
   <div class="form-group">
     <label>UserName</label>
-    <input value="{{userService.user.username}}" class="form-control" disabled>
+    <input value="{{user.username}}" class="form-control" disabled>
   </div>
   <div class="form-group">
     <label>Email</label>
-    <input value="{{userService.user.email}}" class="form-control" disabled>
+    <input value="{{user.email}}" class="form-control" disabled>
   </div>
   <div class="form-group col-md-6">
     <label>First</label>
-    <input value="{{userService.user.firstName}}" class="form-control" disabled>
+    <input value="{{user.firstName}}" class="form-control" disabled>
   </div>
   <div class="form-group col-md-6">
     <label>Last</label>
-    <input value="{{userService.user.lastName}}" class="form-control" disabled>
+    <input value="{{user.lastName}}" class="form-control" disabled>
   </div>
   <div class="form-group">
     <label>PassHash</label>
-    <input value="{{userService.user.password}}" class="form-control" disabled>
+    <input value="{{user.password}}" class="form-control" disabled>
   </div>
-  <div class="form-group">
+  <!-- <div class="form-group">
     <label>Created</label>
-    <input value="{{userService.user.updated_at}}" class="form-control" disabled>
+    <input value="{{user.updated_at}}" class="form-control" disabled>
   </div>
   <div class="form-group">
     <label>id</label>
-    <input value="{{userService.user._id}}" class="form-control" disabled>
-  </div>
+    <input value="{{user._id}}" class="form-control" disabled>
+  </div> -->
   <div class="form-group">
     <label for="exampleTextarea">Token</label>
     <textarea class="form-control" rows="6" disabled>{{token}}</textarea>
   </div>
   <div class="form-group col-md-6">
     <label>Admin</label>
-    <input type="checkbox" class="form-check-input" *ngIf="userService.user.admin" checked="checked" disabled>
-    <input type="checkbox" class="form-check-input" *ngIf="!userService.user.admin" disabled>
+    <input type="checkbox" class="form-check-input" *ngIf="user.admin" checked="checked" disabled>
+    <input type="checkbox" class="form-check-input" *ngIf="!user.admin" disabled>
   </div>
   <div class="form-group col-md-6">
     <label>Active</label>
-    <input type="checkbox" class="form-check-input" *ngIf="userService.user.active" checked="checked" disabled>
-    <input type="checkbox" class="form-check-input" *ngIf="!userService.user.active" disabled>
+    <input type="checkbox" class="form-check-input" *ngIf="user.active" checked="checked" disabled>
+    <input type="checkbox" class="form-check-input" *ngIf="!user.active" disabled>
   </div>
 </form>

@@ -3,7 +3,7 @@ import { Router }                   from '@angular/router';
 import { User }                     from '../_models/user';
 import { UserService }              from '../_services/user.service';
 import { Headers, Response }        from '@angular/http';
-import { HttpClient }               from '@angular/common/http';//TODO: Find out IF/HOW to Remove this. 
+import { HttpClient }               from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -35,7 +35,11 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.userService.checkLogin();
+    if(this.userService.user.auth){
+      //already loggedin
+      this.router.navigateByUrl('/');
+    }
   }
 
 }

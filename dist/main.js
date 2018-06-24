@@ -53,11 +53,13 @@ var User = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserService", function() { return UserService; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _models_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../_models/user */ "./src/app/_models/user.ts");
-/* harmony import */ var _environments_environment_prod__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../environments/environment.prod */ "./src/environments/environment.prod.ts");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _models_user__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../_models/user */ "./src/app/_models/user.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../environments/environment */ "./src/environments/environment.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -72,38 +74,58 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
+// import { NavbarComponent }                                               from '../navbar/navbar.component';
 var UserService = /** @class */ (function () {
     function UserService(http, router) {
         this.http = http;
         this.router = router;
-        this.user = new _models_user__WEBPACK_IMPORTED_MODULE_3__["User"];
-        this.headers = new Headers({ 'Content-Type': 'application/json' });
-        this.url = _environments_environment_prod__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrlBase;
+        this.user = new _models_user__WEBPACK_IMPORTED_MODULE_5__["User"];
+        this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].apiUrlBase;
     }
     UserService.prototype.ngOnInit = function () {
         this.checkLogin();
+        console.log("found user : ", localStorage.getItem('username'));
     };
     UserService.prototype.register = function (username, password, firstName, lastName, email) {
         console.log("make");
         return this.http
-            .post(this.url + "setup", { username: username, password: password, firstName: firstName, lastName: lastName, email: email }); //,{headers:this.headers});
+            .post(this.url + "setup", { username: username, password: password, firstName: firstName, lastName: lastName, email: email })
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])(this.handleError));
+        //,{headers:this.headers});
         // .post(this.url + "setup", JSON.stringify({ username: username, password: password, firstName: firstName, lastName: lastName, email: email }), { headers: this.headers })
         // .map(this.extractData)
         // .catch(this.handleError);    pre HttpClient way of doing this
     };
     UserService.prototype.login = function (username, password) {
         return this.http
-            .post(this.url + "auth", { username: username, password: password });
-        // .post(this.url + "auth", JSON.stringify({ username: username, password: password }), { headers: this.headers })
-        // .map(this.extractData)
-        // .catch(this.handleError);  pre HttpClient way of doing this
+            .post(this.url + "auth", { username: username, password: password })
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])(this.handleError));
+    };
+    UserService.prototype.setAuth = function (data) {
+        this.user.auth = data.success;
+        this.user.admin = data.admin;
+        this.user.token = data.token;
+        this.user.id = data.userId;
+        this.user.username = data.username;
+        localStorage.setItem('auth', data.success);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('admin', data.admin);
+    };
+    UserService.prototype.setUser = function (data) {
+        console.log(data, ' : id sat');
+        this.user = data.user;
+        this.user.auth = data.success;
     };
     UserService.prototype.checkUser = function (username) {
-        var token = localStorage.getItem('token')
-            ? '?token=' + localStorage.getItem('token') : '';
-        if (this.authenticated) {
+        var token = localStorage.getItem('token') ? '?token=' + localStorage.getItem('token') : '';
+        if (this.user.auth) {
             return this.http
-                .post(this.url + "user" + token, { username: username });
+                .post(this.url + "user" + token, { username: username })
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])(this.handleError));
             // .post(this.url + "user" + token, JSON.stringify({ username: username }), { headers: this.headers })
             // .map(this.extractData)
             // .catch(this.handleError); pre HttpClient way of doing this
@@ -118,7 +140,9 @@ var UserService = /** @class */ (function () {
         var token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token') : '';
         return this.http
-            .get(this.url + "users" + token);
+            .get(this.url + "users" + token)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])(this.handleError));
+        ;
         // .get(this.url + "users" + token, { headers: this.headers })
         // .map(this.extractData)
         // .catch(this.handleError);
@@ -129,27 +153,34 @@ var UserService = /** @class */ (function () {
         this.router.navigateByUrl('/');
     };
     UserService.prototype.checkLogin = function () {
-        if (localStorage.getItem('token')) {
-            this.authenticated = true;
-            this.user.username = localStorage.getItem("username");
-            this.checkAdmin();
+        this.user.auth = eval(localStorage.getItem('auth'));
+        this.user.token = localStorage.getItem('token');
+        this.user.username = localStorage.getItem('username');
+        this.user.id = localStorage.getItem('userId');
+        this.user.admin = eval(localStorage.getItem('admin'));
+    };
+    UserService.prototype.handleError = function (error) {
+        if (error.error instanceof ErrorEvent) {
+            // A client-side or network error occurred. Handle it accordingly.
+            console.error('An error occurred:', error.error.message);
         }
         else {
-            this.authenticated = false;
+            // The backend returned an unsuccessful response code.
+            // The response body may contain clues as to what went wrong,
+            alert("There was an error, Please check the Console logs.");
+            console.error("Backend returned code " + error.status + ", " +
+                ("body was: " + error.error));
         }
+        // return an observable with a user-facing error message
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["throwError"])('Something bad happened; please try again later.');
     };
-    UserService.prototype.checkAdmin = function () {
-        this.adm = localStorage.getItem("admin");
-    };
-    UserService.prototype.extractData = function (res) {
-        var body = res.json();
-        console.log(body || {});
-        return body || {};
-    };
+    ;
     UserService = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
-        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"],
-            _angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"]])
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Injectable"])({
+            providedIn: 'root',
+        }),
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClient"],
+            _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]])
     ], UserService);
     return UserService;
 }());
@@ -212,7 +243,7 @@ var AdminComponent = /** @class */ (function () {
     }
     AdminComponent.prototype.ngOnInit = function () {
         var _this = this;
-        if (this.userService.adm == "false") {
+        if (this.userService.user.admin == false) {
             this.router.navigateByUrl('/');
         }
         else {
@@ -429,7 +460,7 @@ module.exports = ".key{\n  border : 1px solid black;\n  width: 40px;\n  height: 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"jumbotron\">\n  <h1 *ngIf=\"!userService.authenticated\">Welcome!</h1>\n  <h1 *ngIf=\"userService.authenticated\">Hello, {{userService.user.username}}!</h1>\n  <p>This is a basic template made by <a href=\"http://www.ryansadowski.xyz\">Ryan Sadowski</a></p>\n  <p><a class=\"btn btn-primary btn-lg\" href=\"http://github.com/RyanSadowski/MEAN2Seed\" role=\"button\">Learn more</a></p>\n</div>\n\n<h3> Slider changes volume</h3>\n<input type=\"range\" min=\"0\" max=\"10\" value=\"0\" [(ngModel)]=\"volume\" (change)=\"ChangeVolume($event.target.value)\">\n<!-- <input type=\"text\" [(ngModel)]=\"tone\" placeholder=\"A4\" (change)=\"ChangeNote($event.target.value)\"> -->\n<ul id=\"waveFormList\">\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"sine\" id=\"sine\"><span>  sine</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"square\" id=\"square\"><span>  square</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"sawtooth\" id=\"sawtooth\"><span>  saw</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"triangle\" id=\"triangle\"><span>  triangle</span></li>\n</ul>\n\n<div id=\"keyboard\">\n  <div (click)=\"ChangeNote('C3')\" class=\"key\">C3</div>\n  <div (click)=\"ChangeNote('D3')\" class=\"key\">D3</div>\n  <div (click)=\"ChangeNote('E3')\" class=\"key\">E3</div>\n  <div (click)=\"ChangeNote('F3')\" class=\"key\">F3</div>\n  <div (click)=\"ChangeNote('G3')\" class=\"key\">G3</div>\n  <div (click)=\"ChangeNote('A3')\" class=\"key\">A3</div>\n  <div (click)=\"ChangeNote('B3')\" class=\"key\">B3</div>\n  <div (click)=\"ChangeNote('C4')\" class=\"key\">C4</div>\n  <div (click)=\"ChangeNote('D4')\" class=\"key\">D4</div>\n  <div (click)=\"ChangeNote('E4')\" class=\"key\">E4</div>\n  <div (click)=\"ChangeNote('F4')\" class=\"key\">F4</div>\n  <div (click)=\"ChangeNote('G4')\" class=\"key\">G4</div>\n  <div (click)=\"ChangeNote('A4')\" class=\"key\">A4</div>\n  <div (click)=\"ChangeNote('B4')\" class=\"key\">B4</div>\n  <div (click)=\"ChangeNote('C5')\" class=\"key\">C5</div>\n  <div (click)=\"ChangeNote('D5')\" class=\"key\">D5</div>\n  <div (click)=\"ChangeNote('E5')\" class=\"key\">E5</div>\n  <div (click)=\"ChangeNote('F5')\" class=\"key\">F5</div>\n  <div (click)=\"ChangeNote('G5')\" class=\"key\">G5</div>\n  <div (click)=\"ChangeNote('A5')\" class=\"key\">A5</div>\n  <div (click)=\"ChangeNote('B5')\" class=\"key\">B5</div>\n</div>\n\n\n<br>\n\n<h3>Low Pass filter 0hz - 1000hz</h3>\n<input type=\"range\" min=\"0\" max=\"1000\" value=\"1000\" (change)=\"ChangeFilter($event.target.value)\">\n<!-- <p class=\"muted\">Try values like \"A4,B5,G2\"</p>-->\n"
+module.exports = "<div class=\"jumbotron\">\n  <h1 *ngIf=\"!auth\">Welcome!</h1>\n  <h1 *ngIf=\"auth\">Hello, {{username}}!</h1>\n  <p>This is a basic template made by <a href=\"http://www.ryansadowski.xyz\">Ryan Sadowski</a></p>\n  <p><a class=\"btn btn-primary btn-lg\" href=\"http://github.com/RyanSadowski/MEAN2Seed\" role=\"button\">Learn more</a></p>\n</div>\n\n<h3> Slider changes volume</h3>\n<input type=\"range\" min=\"0\" max=\"10\" value=\"0\" [(ngModel)]=\"volume\" (change)=\"ChangeVolume($event.target.value)\">\n<!-- <input type=\"text\" [(ngModel)]=\"tone\" placeholder=\"A4\" (change)=\"ChangeNote($event.target.value)\"> -->\n<ul id=\"waveFormList\">\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"sine\" id=\"sine\"><span>  sine</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"square\" id=\"square\"><span>  square</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"sawtooth\" id=\"sawtooth\"><span>  saw</span></li>\n  <li><input type=\"radio\" [(ngModel)]=\"oscType\" (change)=\"ChangeWaveForm($event.target.value)\" value=\"triangle\" id=\"triangle\"><span>  triangle</span></li>\n</ul>\n\n<div id=\"keyboard\">\n  <div (click)=\"ChangeNote('C3')\" class=\"key\">C3</div>\n  <div (click)=\"ChangeNote('D3')\" class=\"key\">D3</div>\n  <div (click)=\"ChangeNote('E3')\" class=\"key\">E3</div>\n  <div (click)=\"ChangeNote('F3')\" class=\"key\">F3</div>\n  <div (click)=\"ChangeNote('G3')\" class=\"key\">G3</div>\n  <div (click)=\"ChangeNote('A3')\" class=\"key\">A3</div>\n  <div (click)=\"ChangeNote('B3')\" class=\"key\">B3</div>\n  <div (click)=\"ChangeNote('C4')\" class=\"key\">C4</div>\n  <div (click)=\"ChangeNote('D4')\" class=\"key\">D4</div>\n  <div (click)=\"ChangeNote('E4')\" class=\"key\">E4</div>\n  <div (click)=\"ChangeNote('F4')\" class=\"key\">F4</div>\n  <div (click)=\"ChangeNote('G4')\" class=\"key\">G4</div>\n  <div (click)=\"ChangeNote('A4')\" class=\"key\">A4</div>\n  <div (click)=\"ChangeNote('B4')\" class=\"key\">B4</div>\n  <div (click)=\"ChangeNote('C5')\" class=\"key\">C5</div>\n  <div (click)=\"ChangeNote('D5')\" class=\"key\">D5</div>\n  <div (click)=\"ChangeNote('E5')\" class=\"key\">E5</div>\n  <div (click)=\"ChangeNote('F5')\" class=\"key\">F5</div>\n  <div (click)=\"ChangeNote('G5')\" class=\"key\">G5</div>\n  <div (click)=\"ChangeNote('A5')\" class=\"key\">A5</div>\n  <div (click)=\"ChangeNote('B5')\" class=\"key\">B5</div>\n</div>\n\n\n<br>\n\n<h3>Low Pass filter 0hz - 1000hz</h3>\n<input type=\"range\" min=\"0\" max=\"1000\" value=\"1000\" (change)=\"ChangeFilter($event.target.value)\">\n<!-- <p class=\"muted\">Try values like \"A4,B5,G2\"</p>-->\n"
 
 /***/ }),
 
@@ -444,9 +475,9 @@ module.exports = "<div class=\"jumbotron\">\n  <h1 *ngIf=\"!userService.authenti
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HomeComponent", function() { return HomeComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../_services/user.service */ "./src/app/_services/user.service.ts");
-/* harmony import */ var octavian__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! octavian */ "./node_modules/octavian/build/index.js");
-/* harmony import */ var octavian__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(octavian__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var octavian__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! octavian */ "./node_modules/octavian/build/index.js");
+/* harmony import */ var octavian__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(octavian__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../_services/user.service */ "./src/app/_services/user.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -461,9 +492,10 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var HomeComponent = /** @class */ (function () {
     function HomeComponent(userService) {
+        this.userService = userService;
         this.volume = 0;
         this.oscType = 'sine';
-        this.note = new octavian__WEBPACK_IMPORTED_MODULE_2__["Note"]('A4');
+        this.note = new octavian__WEBPACK_IMPORTED_MODULE_1__["Note"]('A4');
         this.audioCtx = new window.AudioContext();
         this.oscillator = this.audioCtx.createOscillator();
         this.gainNode = this.audioCtx.createGain();
@@ -471,6 +503,9 @@ var HomeComponent = /** @class */ (function () {
         this.filter = this.audioCtx.createBiquadFilter();
     }
     HomeComponent.prototype.ngOnInit = function () {
+        this.userService.checkLogin();
+        // var auth = this.userService.authenticated;
+        // var username = this.userService.user.username;
         if (window.navigator.requestMIDIAccess) {
             window.navigator.requestMIDIAccess({
                 sysex: false
@@ -500,7 +535,7 @@ var HomeComponent = /** @class */ (function () {
         console.log("Volume changed to:" + this.volume);
     };
     HomeComponent.prototype.ChangeNote = function (value) {
-        this.note = new octavian__WEBPACK_IMPORTED_MODULE_2__["Note"](value);
+        this.note = new octavian__WEBPACK_IMPORTED_MODULE_1__["Note"](value);
         this.oscillator.frequency.value = this.note.frequency;
     };
     HomeComponent.prototype.ChangeWaveForm = function (value) {
@@ -544,7 +579,7 @@ var HomeComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./home.component.html */ "./src/app/home/home.component.html"),
             styles: [__webpack_require__(/*! ./home.component.css */ "./src/app/home/home.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_user_service__WEBPACK_IMPORTED_MODULE_1__["UserService"]])
+        __metadata("design:paramtypes", [_services_user_service__WEBPACK_IMPORTED_MODULE_2__["UserService"]])
     ], HomeComponent);
     return HomeComponent;
 }());
@@ -606,6 +641,13 @@ var LoginComponent = /** @class */ (function () {
         this.router = router;
         this.mode = 'Observable';
     }
+    LoginComponent.prototype.ngOnInit = function () {
+        this.userService.checkLogin();
+        if (this.userService.user.auth) {
+            //already loggedin
+            this.router.navigateByUrl('/');
+        }
+    };
     LoginComponent.prototype.login = function (username, password) {
         var _this = this;
         username = username.trim();
@@ -614,15 +656,12 @@ var LoginComponent = /** @class */ (function () {
         }
         this.userService.login(username, password)
             .subscribe(function (res) {
+            // console.log(res);
+            _this.userService.setAuth(res);
             _this.registerSuccess = res.success;
-            _this.res = res;
-            localStorage.setItem('token', res.token);
-            localStorage.setItem('username', res.username);
-            localStorage.setItem('userId', res.userId);
-            localStorage.setItem('admin', res.admin);
             _this.userService.checkLogin();
             _this.router.navigateByUrl('/');
-        }, function (error) { return _this.errorMessage = error; });
+        });
     };
     LoginComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -658,7 +697,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-inverse\">\n  <div class=\"container-fluid\">\n    <div class=\"navbar-header\">\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">\n        <span class=\"sr-only\">Toggle navigation</span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n      </button>\n      <a class=\"navbar-brand\" routerLink=\"/\">\n        <span class=\"glyphicon glyphicon-glass\"> Mean2 Seed</span>\n      </a>\n    </div>\n    <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n      <ul class=\"nav navbar-right navbar-nav\" *ngIf=\"!userService.authenticated\">\n        <li><a routerLink=\"/login\">Login</a></li>\n        <li><a routerLink=\"/register\">Register</a></li>\n      </ul>\n      <ul class=\"nav navbar-right navbar-nav\" *ngIf=\"userService.authenticated\">\n        <li *ngIf=\"userService.adm == 'true'\"><a routerLink=\"/admin\"><span class=\"glyphicon glyphicon-cog\"></span></a></li>\n        <li><a routerLink=\"/profile\">Profile</a></li>\n        <li><a (click)=\"logout();\"><span>Logout</span></a></li>\n      </ul>\n    </div>\n  </div>\n</nav>\n"
+module.exports = "<nav class=\"navbar navbar-inverse\">\n  <div class=\"container-fluid\">\n    <div class=\"navbar-header\">\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">\n        <span class=\"sr-only\">Toggle navigation</span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n      </button>\n      <a class=\"navbar-brand\" routerLink=\"/\">\n        <span class=\"glyphicon glyphicon-glass\"> Home</span>\n      </a>\n    </div>\n    <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n      <ul class=\"nav navbar-right navbar-nav\" *ngIf=\"!this.userService.user.auth\">\n        <li><a routerLink=\"/login\">Login</a></li>\n        <li><a routerLink=\"/register\">Register</a></li>\n      </ul>\n      <ul class=\"nav navbar-right navbar-nav\" *ngIf=\"this.userService.user.auth\">\n        <li *ngIf=\"this.userService.user.admin\">\n          <a routerLink=\"/admin\">\n            <span class=\"glyphicon glyphicon-cog\"></span>\n          </a>\n        </li>\n        <li><a routerLink=\"/profile\">Profile</a></li>\n        <li><a (click)=\"logout();\"><span>Logout</span></a></li>\n      </ul>\n    </div>\n  </div>\n</nav>\n"
 
 /***/ }),
 
@@ -695,9 +734,6 @@ var NavbarComponent = /** @class */ (function () {
     NavbarComponent.prototype.logout = function () {
         this.userService.logout();
     };
-    NavbarComponent.prototype.loggedIn = function (success) {
-        console.log(success + " logged in ");
-    };
     NavbarComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'navbar',
@@ -731,7 +767,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<form>\n  <div class=\"form-group\">\n    <label>UserName</label>\n    <input value=\"{{userService.user.username}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label>Email</label>\n    <input value=\"{{userService.user.email}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>First</label>\n    <input value=\"{{userService.user.firstName}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>Last</label>\n    <input value=\"{{userService.user.lastName}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label>PassHash</label>\n    <input value=\"{{userService.user.password}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label>Created</label>\n    <input value=\"{{userService.user.updated_at}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label>id</label>\n    <input value=\"{{userService.user._id}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"exampleTextarea\">Token</label>\n    <textarea class=\"form-control\" rows=\"6\" disabled>{{token}}</textarea>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>Admin</label>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"userService.user.admin\" checked=\"checked\" disabled>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"!userService.user.admin\" disabled>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>Active</label>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"userService.user.active\" checked=\"checked\" disabled>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"!userService.user.active\" disabled>\n  </div>\n</form>\n"
+module.exports = "<form>\n  <div class=\"form-group\">\n    <label>UserName</label>\n    <input value=\"{{user.username}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label>Email</label>\n    <input value=\"{{user.email}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>First</label>\n    <input value=\"{{user.firstName}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>Last</label>\n    <input value=\"{{user.lastName}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label>PassHash</label>\n    <input value=\"{{user.password}}\" class=\"form-control\" disabled>\n  </div>\n  <!-- <div class=\"form-group\">\n    <label>Created</label>\n    <input value=\"{{user.updated_at}}\" class=\"form-control\" disabled>\n  </div>\n  <div class=\"form-group\">\n    <label>id</label>\n    <input value=\"{{user._id}}\" class=\"form-control\" disabled>\n  </div> -->\n  <div class=\"form-group\">\n    <label for=\"exampleTextarea\">Token</label>\n    <textarea class=\"form-control\" rows=\"6\" disabled>{{token}}</textarea>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>Admin</label>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"user.admin\" checked=\"checked\" disabled>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"!user.admin\" disabled>\n  </div>\n  <div class=\"form-group col-md-6\">\n    <label>Active</label>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"user.active\" checked=\"checked\" disabled>\n    <input type=\"checkbox\" class=\"form-check-input\" *ngIf=\"!user.active\" disabled>\n  </div>\n</form>\n"
 
 /***/ }),
 
@@ -764,21 +800,25 @@ var ProfileComponent = /** @class */ (function () {
     function ProfileComponent(userService, router) {
         this.userService = userService;
         this.router = router;
+        this.user = this.userService.user;
     }
     ProfileComponent.prototype.ngOnInit = function () {
-        this.token = localStorage.getItem('token');
-        this.checkUser();
-    };
-    ProfileComponent.prototype.checkUser = function () {
-        var _this = this;
-        this.username = localStorage.getItem('username');
-        if (!this.username) {
+        this.userService.checkLogin();
+        if (!this.userService.user) {
             alert('need to login');
             this.router.navigateByUrl("/login");
         }
-        this.userService.checkUser(this.username)
+        this.getUser();
+        this.token = this.userService.user.token;
+    };
+    ProfileComponent.prototype.getUser = function () {
+        var _this = this;
+        this.userService.checkUser(this.userService.user.username)
             .subscribe(function (res) {
-            _this.userService.user = res.user;
+            // this.userService.user = res.user;
+            console.log(res);
+            _this.userService.setUser(res);
+            _this.user = _this.userService.user;
         }, function (error) { return _this.errorMessage = error; });
     };
     ProfileComponent = __decorate([
@@ -864,6 +904,11 @@ var RegisterComponent = /** @class */ (function () {
         }, function (error) { return _this.errorMessage = error; });
     };
     RegisterComponent.prototype.ngOnInit = function () {
+        this.userService.checkLogin();
+        if (this.userService.user.auth) {
+            //already loggedin
+            this.router.navigateByUrl('/');
+        }
     };
     RegisterComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -890,25 +935,6 @@ var RegisterComponent = /** @class */ (function () {
 
 // Observable class extensions
 // Observable operators
-
-
-/***/ }),
-
-/***/ "./src/environments/environment.prod.ts":
-/*!**********************************************!*\
-  !*** ./src/environments/environment.prod.ts ***!
-  \**********************************************/
-/*! exports provided: environment */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
-var environment = {
-    production: true,
-    envName: "Prod",
-    apiUrlBase: "/api/"
-};
 
 
 /***/ }),

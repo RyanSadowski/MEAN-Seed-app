@@ -10,17 +10,17 @@ import {BehaviorSubject}          from 'rxjs'
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  public isLoggedIn: boolean;
+
 
   constructor(private userService: UserService) { }
 
+ 
   ngOnInit() {
     this.userService.checkLogin();
   }
+  
   logout() {
-    this.userService.logout();
+    this.userService.logout(); 
   }
-  loggedIn(success) {
-    console.log(success + " logged in ");
-  }
+
 }

@@ -19,7 +19,7 @@ export class AdminComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    if (this.userService.adm == "false") {
+    if (this.userService.user.admin == false) {
       this.router.navigateByUrl('/');
     } else {
       this.userService.getUsers()

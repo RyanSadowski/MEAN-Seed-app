@@ -12,7 +12,7 @@ import { HomeComponent }            from './home/home.component';
 import { NavbarComponent }          from './navbar/navbar.component';
 import { UserService }              from './_services/user.service';
 import { ProfileComponent }         from './profile/profile.component';
-import { AdminComponent } from './admin/admin.component';
+import { AdminComponent }           from './admin/admin.component';
 
 @NgModule({
   declarations: [

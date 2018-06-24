@@ -52,13 +52,16 @@ apiRoutes.post('/auth', function(req, res) {
     }
     //user not found in db
     if (!user) {
+      console.log('user not found in db');
       return res.status(401).json({
         success: false,
         message: 'Authentication failed'
       });
     } else if (user) {
+      console.log("checking pw");
       // check if password matches
       if (bcrypt.compareSync(req.body.password, user.password)) {
+        console.log("pw is good")
         // if user is found and password is right
         // create a token
         usertmp = user;
@@ -124,6 +127,8 @@ NEED A TOKEN FOR ANYTHING AFTER THIS COMMENT
 
 apiRoutes.post('/user', function(req, res) {
   // find the user
+  console.log('getting user: ', req.body.username);
+
   User.findOne({
     username: req.body.username
   }, function(err, user) {
@@ -135,6 +140,7 @@ apiRoutes.post('/user', function(req, res) {
     }
     //user not found in db
     if (!user) {
+      console.log('user not found in db?')
       return res.status(401).json({
         success: false,
         message: 'Why are you not a user?'
