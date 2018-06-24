@@ -1,9 +1,6 @@
-import { Component, EventEmitter, Input, Output }   from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit }   from '@angular/core';
 import { Router }                                   from '@angular/router';
-import { Headers, Response, Http }                  from '@angular/http';
-import { User }                                     from '../_models/user';
 import { UserService }                              from '../_services/user.service';
-import { NavbarComponent }                          from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-login',
@@ -11,17 +8,25 @@ import { NavbarComponent }                          from '../navbar/navbar.compo
   styleUrls: ['./login.component.css']
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   errorMessage: string;
   registerSuccess: boolean;
-  res: JSON;
   mode = 'Observable';
 
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    // private navbar: NavbarComponent
   ) { }
+
+  ngOnInit(){
+    this.userService.checkLogin();
+    if(this.userService.user.auth){
+      //already loggedin
+      this.router.navigateByUrl('/');
+    }
+  }
 
   login(username: string, password: string) {
     username = username.trim();
@@ -29,15 +34,12 @@ export class LoginComponent {
     this.userService.login(username, password)
       .subscribe(
       res => {
+        // console.log(res);
+        this.userService.setAuth(res);
         this.registerSuccess = res.success;
-        this.res = res;
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('username', res.username);
-        localStorage.setItem('userId', res.userId);
-        localStorage.setItem('admin', res.admin);
         this.userService.checkLogin();
         this.router.navigateByUrl('/');
-      },
-      error => this.errorMessage = <any>error);
-  }
+      }
+    )
+}
 }

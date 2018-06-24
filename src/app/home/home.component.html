@@ -1,38 +1,47 @@
 <div class="jumbotron">
-  <h1 *ngIf="!userService.authenticated">Hello, world!</h1>
-  <h1 *ngIf="userService.authenticated">Hello, {{userService.user.username}}</h1>
+  <h1 *ngIf="!this.userService.user.auth">Welcome!</h1>
+  <h1 *ngIf="this.userService.user.auth">Hello, {{this.userService.user.username}}!</h1>
   <p>This is a basic template made by <a href="http://www.ryansadowski.xyz">Ryan Sadowski</a></p>
   <p><a class="btn btn-primary btn-lg" href="http://github.com/RyanSadowski/MEAN2Seed" role="button">Learn more</a></p>
 </div>
-<div class="row">
-  <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-      <img src="/assets/images/edge.jpg">
-      <div class="caption">
-        <h3>Lol only old people use you</h3>
-        <p>what are you doing.... like for real. I don't understand.</p>
-        <p><a href="http://twitter.com/SadowskiRyan" class="btn btn-primary" role="button">Twitter</a> <a href="http://github.com/RyanSadowski/MEAN2Seed" class="btn btn-default" role="button">Github</a></p>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-      <img src="/assets/images/meow.jpg">
-      <div class="caption">
-        <h3>wow</h3>
-        <p>It's a cat... on the internet</p>
-        <p><a href="http://twitter.com/SadowskiRyan" class="btn btn-primary" role="button">Twitter</a> <a href="http://github.com/RyanSadowski/MEAN2Seed" class="btn btn-default" role="button">Github</a></p>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-      <img src="/assets/images/spider.jpg">
-      <div class="caption">
-        <h3>Rip Spiderbro</h3>
-        <p>Aracnogeddon ended up hurting everyone in the end. But none as badly as you..</p>
-        <p><a href="http://twitter.com/SadowskiRyan" class="btn btn-primary" role="button">Twitter</a> <a href="http://github.com/RyanSadowski/MEAN2Seed" class="btn btn-default" role="button">Github</a></p>
-      </div>
-    </div>
-  </div>
+
+<h3> Slider changes volume</h3>
+<input type="range" min="0" max="10" value="0" [(ngModel)]="volume" (change)="ChangeVolume($event.target.value)">
+<!-- <input type="text" [(ngModel)]="tone" placeholder="A4" (change)="ChangeNote($event.target.value)"> -->
+<ul id="waveFormList">
+  <li><input type="radio" [(ngModel)]="oscType" (change)="ChangeWaveForm($event.target.value)" value="sine" id="sine"><span>  sine</span></li>
+  <li><input type="radio" [(ngModel)]="oscType" (change)="ChangeWaveForm($event.target.value)" value="square" id="square"><span>  square</span></li>
+  <li><input type="radio" [(ngModel)]="oscType" (change)="ChangeWaveForm($event.target.value)" value="sawtooth" id="sawtooth"><span>  saw</span></li>
+  <li><input type="radio" [(ngModel)]="oscType" (change)="ChangeWaveForm($event.target.value)" value="triangle" id="triangle"><span>  triangle</span></li>
+</ul>
+
+<div id="keyboard">
+  <div (click)="ChangeNote('C3')" class="key">C3</div>
+  <div (click)="ChangeNote('D3')" class="key">D3</div>
+  <div (click)="ChangeNote('E3')" class="key">E3</div>
+  <div (click)="ChangeNote('F3')" class="key">F3</div>
+  <div (click)="ChangeNote('G3')" class="key">G3</div>
+  <div (click)="ChangeNote('A3')" class="key">A3</div>
+  <div (click)="ChangeNote('B3')" class="key">B3</div>
+  <div (click)="ChangeNote('C4')" class="key">C4</div>
+  <div (click)="ChangeNote('D4')" class="key">D4</div>
+  <div (click)="ChangeNote('E4')" class="key">E4</div>
+  <div (click)="ChangeNote('F4')" class="key">F4</div>
+  <div (click)="ChangeNote('G4')" class="key">G4</div>
+  <div (click)="ChangeNote('A4')" class="key">A4</div>
+  <div (click)="ChangeNote('B4')" class="key">B4</div>
+  <div (click)="ChangeNote('C5')" class="key">C5</div>
+  <div (click)="ChangeNote('D5')" class="key">D5</div>
+  <div (click)="ChangeNote('E5')" class="key">E5</div>
+  <div (click)="ChangeNote('F5')" class="key">F5</div>
+  <div (click)="ChangeNote('G5')" class="key">G5</div>
+  <div (click)="ChangeNote('A5')" class="key">A5</div>
+  <div (click)="ChangeNote('B5')" class="key">B5</div>
 </div>
+
+
+<br>
+
+<h3>Low Pass filter 0hz - 1000hz</h3>
+<input type="range" min="0" max="1000" value="1000" (change)="ChangeFilter($event.target.value)">
+<!-- <p class="muted">Try values like "A4,B5,G2"</p>-->

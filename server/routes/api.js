@@ -44,7 +44,6 @@ apiRoutes.post('/auth', function(req, res) {
   User.findOne({
     username: req.body.username
   }, function(err, user) {
-
     if (err) {
       return res.status(500).json({
         title: 'An error occured!',
@@ -53,25 +52,23 @@ apiRoutes.post('/auth', function(req, res) {
     }
     //user not found in db
     if (!user) {
+      console.log('user not found in db');
       return res.status(401).json({
         success: false,
         message: 'Authentication failed'
       });
     } else if (user) {
+      console.log("checking pw");
       // check if password matches
-      if (!bcrypt.compareSync(req.body.password, user.password)) {
-        res.status(401).json({
-          success: false,
-          message: 'Authentication failed.'
-        });
-      }
-      else {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
+        console.log("pw is good")
         // if user is found and password is right
         // create a token
-        var token = jwt.sign(user, app.get('superSecret'), {
+        usertmp = user;
+        usertmp.password = null;
+        var token = jwt.sign(user.toObject(), app.get('superSecret'), {
           expiresIn: 18000 // expires in 60*5 minutes
         });
-
         // return the information including token as JSON
         res.status(201).json({
           success: true,
@@ -81,6 +78,14 @@ apiRoutes.post('/auth', function(req, res) {
           admin: user.admin,
           token: token
         });
+      }
+      else {
+        res.status(401).json({
+          success: false,
+          message: 'Authentication failed.'
+        });
+        
+
       }
     }
   });
@@ -121,12 +126,12 @@ NEED A TOKEN FOR ANYTHING AFTER THIS COMMENT
 ==========================*/
 
 apiRoutes.post('/user', function(req, res) {
-  console.log(req.body);
   // find the user
+  console.log('getting user: ', req.body.username);
+
   User.findOne({
     username: req.body.username
   }, function(err, user) {
-
     if (err) {
       return res.status(500).json({
         title: 'An error occured!',
@@ -135,6 +140,7 @@ apiRoutes.post('/user', function(req, res) {
     }
     //user not found in db
     if (!user) {
+      console.log('user not found in db?')
       return res.status(401).json({
         success: false,
         message: 'Why are you not a user?'

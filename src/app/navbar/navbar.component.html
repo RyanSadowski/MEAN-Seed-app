@@ -8,16 +8,20 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" routerLink="/">
-        <span class="glyphicon glyphicon-glass"> Mean2 Seed</span>
+        <span class="glyphicon glyphicon-glass"> Home</span>
       </a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-right navbar-nav" *ngIf="!userService.authenticated">
+      <ul class="nav navbar-right navbar-nav" *ngIf="!this.userService.user.auth">
         <li><a routerLink="/login">Login</a></li>
         <li><a routerLink="/register">Register</a></li>
       </ul>
-      <ul class="nav navbar-right navbar-nav" *ngIf="userService.authenticated">
-        <li *ngIf="userService.adm == 'true'"><a routerLink="/admin"><span class="glyphicon glyphicon-cog"></span></a></li>
+      <ul class="nav navbar-right navbar-nav" *ngIf="this.userService.user.auth">
+        <li *ngIf="this.userService.user.admin">
+          <a routerLink="/admin">
+            <span class="glyphicon glyphicon-cog"></span>
+          </a>
+        </li>
         <li><a routerLink="/profile">Profile</a></li>
         <li><a (click)="logout();"><span>Logout</span></a></li>
       </ul>
