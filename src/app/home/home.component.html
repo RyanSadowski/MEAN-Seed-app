@@ -2,8 +2,34 @@
   <h1 *ngIf="!this.service.user.auth">Welcome!</h1>
   <h1 *ngIf="this.service.user.auth">Hello, {{this.service.user.username}}!</h1>
   <p>This is a basic template made by <a href="http://www.ryansadowski.xyz">Ryan Sadowski</a></p>
-  <p><a class="btn btn-primary btn-lg" href="http://github.com/RyanSadowski/MEAN2Seed" role="button">Learn more</a></p>
+    <br>
+  <p><a class="btn btn-primary btn-lg" href="http://github.com/RyanSadowski/MEAN2Seed" role="button">See project in GitHub</a></p>
 </div>
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p>This was originally something I made to learn about using JSON Web Tokens for authentication between an API and Front End. 
+        It was first written in Angular 2, NodeJS, MongoDB, running on Heroku.</p>
+    </div>
+  </div>
+  <div class="panel panel-default">
+      <div class="panel-body">
+          <p> If you look in the top right of the page Header you can login with username: <code>admin</code> password: <code>admin</code>
+              Click on the gear icon, you will see and admin only page. If you register an account, you will have a non-admin account.
+              Click the <code>Profile</code> link to see the web token, password hash, and other data.</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <p><strong>Below</strong> is just me playing with the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API">WebAudioApi</a> to make a synthisizer.</p>
+    <p>Turn up the volume slider and start clicking stuff.</p>
+
+        </div>
+      </div>
+
+
 
 <h3> Slider changes volume</h3>
 <input type="range" min="0" max="10" value="0" [(ngModel)]="volume" (change)="ChangeVolume($event.target.value)">
@@ -45,3 +71,4 @@
 <h3>Low Pass filter 0hz - 1000hz</h3>
 <input type="range" min="0" max="1000" value="1000" (change)="ChangeFilter($event.target.value)">
 <!-- <p class="muted">Try values like "A4,B5,G2"</p>-->
+   
