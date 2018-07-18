@@ -11,8 +11,10 @@ import {BehaviorSubject}          from 'rxjs'
 })
 export class NavbarComponent implements OnInit {
 
+  userService = this.service
 
-  constructor(private userService: UserService) { }
+
+  constructor(private service: UserService) { }
 
  
   ngOnInit() {

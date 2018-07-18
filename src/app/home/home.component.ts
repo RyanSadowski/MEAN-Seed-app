@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
   gainNode = this.audioCtx.createGain();
   distortion = this.audioCtx.createWaveShaper();
   filter = this.audioCtx.createBiquadFilter();
+  service = this.userService
 
   constructor(private userService: UserService) { }
 
